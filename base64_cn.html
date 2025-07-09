@@ -1,0 +1,849 @@
+<html onselectstart="return false" oncontextmenu="window.event.returnValue=false">
+<head>
+<meta charset="utf-8" name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no,target-densitydpi=device-dpi">
+<iframe hidden name="iframe"></iframe>
+<title>Base64 by JS</title>
+</head>
+<style>
+/*@font-face{
+font-family:font;
+src:url('');
+}*/
+*::selection{
+color:#fff;
+background:#2e2e2e;
+}
+*::-webkit-scrollbar{
+width:0px;
+height:0px;
+}
+*::placeholder{
+color:#555;
+}
+*{
+font-family:font;
+outline:none;
+box-sizing:border-box;
+-webkit-text-size-adjust:none;
+-webkit-tap-highlight-color:rgba(0,0,0,0);
+//-webkit-overflow-scrolling:touch;
+user-select:none;
+scrollbar-width:none;
+//transition:all 0.5s;
+}
+a{
+text-decoration:none;
+}
+textarea{
+padding:5px;
+flex:1;
+width:100%;
+height:auto;
+border:0px solid #2e2e2e;
+resize:none;
+font-size:16px;
+line-height:20px;
+word-break:break-all;
+word-wrap:break-word;
+overflow-x:hidden;//important
+}
+body{
+margin:0;
+width:100%;
+height:100%;
+}
+#index{
+position:fixed;
+top:0px;
+left:0px;
+width:100%;
+height:100%;
+background:#fff;
+}
+#view{
+display:flex;
+flex-direction:column;
+height:100%;
+overflow:auto;
+}
+#encode,
+#decode{
+flex:1;
+display:flex;
+flex-direction:column;
+width:100%;
+height:100%;
+border:0px solid #2e2e2e;
+}
+#entofile,
+#detofile{
+padding:5px;
+flex-grow:1;
+//width:auto;
+border:0px solid #2e2e2e;
+//text-align:center;
+background:#eaeaf3;
+}
+
+#enupfile,
+#deupfile{
+padding:5px;
+flex-grow:1;
+//width:auto;
+border-left:0px solid #2e2e2e;
+//text-align:center;
+background:#eaccff;
+}
+
+#enflex,
+#deflex{
+display:flex;
+width:100%;
+}
+
+@media only screen and (min-width:600px) and (orientation:landscape){
+#view{
+flex-direction:row;
+}
+}
+</style>
+<div id="index">
+
+
+<div id="view">
+
+<div id="encode">
+<textarea placeholder="编码"></textarea>
+<div id="enflex">
+<div id="entofile">下载编码内容为文件</div>
+<div id="enupfile">上传文件</div>
+</div>
+</div>
+
+<div id="decode">
+<textarea placeholder="解码"></textarea>
+<div id="deflex">
+<div id="detofile">下载解码内容为文件</div>
+<div id="deupfile">上传文件</div>
+</div>
+</div>
+
+</div>
+
+
+</div>
+<script>
+//let state=false;
+//const init=()=>{
+//if(state) return; state=true;
+base64Data='';
+binaryData='';
+blobAccess=false;
+outType=true;
+chunkSize=0x1;
+
+
+
+
+/* ///// stringToBase64
+
+function stringToBase64(str){
+const encoder=new TextEncoder();
+const bytes=encoder.encode(str);
+let binary='';
+for(let i=0;i<bytes.byteLength;i++){
+binary+=String.fromCharCode(bytes[i]);
+};
+return btoa(binary);
+};
+
+function stringToBase64(str){
+const encoder=new TextEncoder();
+const bytes=encoder.encode(str);
+const binary=Array.from(bytes).reduce((acc, byte) => acc + String.fromCharCode(byte), '');
+return btoa(binary);
+};
+
+*/
+
+
+
+
+function stringToBase64(str){
+const encoder=new TextEncoder();
+const bytes=encoder.encode(str);
+const binary=Array.from(bytes).map(byte=>String.fromCharCode(byte)).join('');
+return btoa(binary);
+}
+
+
+
+/* ///// arrayBufferToBase64
+
+function arrayBufferToBase64(buffer){
+let binary='';
+const bytes=new Uint8Array(buffer);
+const len=bytes.byteLength;
+for(let i=0;i<len;i++){
+binary+=String.fromCharCode(bytes[i]);
+};
+return btoa(binary);
+};
+
+function arrayBufferToBase64(buffer){
+const binary=new Uint8Array(buffer);
+const binaryString=String.fromCharCode.apply(null, binary);
+return btoa(binaryString);
+}
+
+function arrayBufferToBase64(buffer){
+const binary=new Uint8Array(buffer);
+const binaryString=String.fromCharCode(...binary);
+return btoa(binaryString);
+};
+
+function arrayBufferToBase64(buffer){
+const binary=new Uint8Array(buffer);
+const CHUNK_SIZE=0x80000;
+let binaryString='';
+for(let i=0;i<binary.length;i+=CHUNK_SIZE){
+binaryString+=String.fromCharCode.apply(null,binary.subarray(i,i+CHUNK_SIZE));
+};
+console.log(binaryString.slice(0,3000));
+return btoa(binaryString);
+};
+
+function arrayBufferToBase64(buffer){
+const binary=new Uint8Array(buffer);
+let binaryString='';
+for(let i=0;i<binary.length;i+=chunkSize){
+binaryString+=btoa(String.fromCharCode.apply(null,binary.subarray(i,i+chunkSize)));
+};
+console.log(binaryString.slice(0,3000));
+return binaryString;//btoa(binaryString);
+};
+
+
+function arrayBufferToBase64(buffer){
+const binary=new Uint8Array(buffer);
+const CHUNK_SIZE=0x80000;
+let binaryString='';
+for(let i=0;i<binary.length;i+=CHUNK_SIZE){
+binaryString+=String.fromCharCode.apply(null,binary.subarray(i,i+CHUNK_SIZE));
+};
+console.log(binaryString.slice(0,3000));
+
+let base64String='';
+for(let j=0;j<binaryString.length;j+=CHUNK_SIZE){
+base64String+=btoa(binaryString.slice(j,j+CHUNK_SIZE));
+};
+
+return base64String;//btoa(binaryString);
+};
+
+*/
+
+
+
+function arrayBufferToBase64(buffer){
+const binary=new Uint8Array(buffer);
+const CHUNK_SIZE=0x19999;
+let binaryString='';
+for(let i=0;i<binary.length;i+=CHUNK_SIZE){
+binaryString+=String.fromCharCode.apply(null,binary.subarray(i,i+CHUNK_SIZE));
+};
+console.log(binaryString.slice(0,1000));
+console.log(binaryString.length);
+//console.log(binaryString.length);
+
+return btoa(binaryString);
+};
+
+
+
+//编码 8秒
+function arrayBufferToBase64Buffer(buffer){
+const base64Chars='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+const bytes=new Uint8Array(buffer);
+const base64Len=Math.ceil(bytes.length/3)*4;
+const base64Array=new Uint8Array(base64Len);
+let index=0;
+for(let i=0;i<bytes.length;i+=3){
+const byte1=bytes[i];
+const byte2=(i+1<bytes.length)?bytes[i+1]:0;
+const byte3=(i+2<bytes.length)?bytes[i+2]:0;
+const base64_1=byte1 >> 2;
+const base64_2=((byte1 & 0x03) << 4) | (byte2 >> 4);
+const base64_3=((byte2 & 0x0F) << 2) | (byte3 >> 6);
+const base64_4=byte3 & 0x3F;
+base64Array[index++]=base64Chars.charCodeAt(base64_1);
+base64Array[index++]=base64Chars.charCodeAt(base64_2);
+base64Array[index++]=(i+1<bytes.length)?base64Chars.charCodeAt(base64_3):61;
+base64Array[index++]=(i+2<bytes.length)?base64Chars.charCodeAt(base64_4):61;// '='.charCodeAt(0)
+};
+return base64Array.buffer;
+};
+
+
+
+
+
+//解码 9秒
+function base64BufferToArrayBuffer(base64Buffer){
+const base64Chars='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+const lookup=new Uint8Array(256);
+for(let i=0;i<base64Chars.length;i++){
+lookup[base64Chars.charCodeAt(i)]=i;
+};
+const base64Array=new Uint8Array(base64Buffer);
+const base64Len=base64Array.length;
+const padding=(base64Array[base64Len-1]===61?1:0)+(base64Array[base64Len-2]===61?1:0); // '='.charCodeAt(0) 61
+const bytesLen=(base64Len/4)*3-padding;
+const bytes=new Uint8Array(bytesLen);
+let index=0;
+for(let i=0;i<base64Len;i+=4){
+const base64_1=lookup[base64Array[i]];
+const base64_2=lookup[base64Array[i + 1]];
+const base64_3=lookup[base64Array[i + 2]];
+const base64_4=lookup[base64Array[i + 3]];
+const byte1=(base64_1 << 2) | (base64_2 >> 4);
+const byte2=((base64_2 & 0x0F) << 4) | (base64_3 >> 2);
+const byte3=((base64_3 & 0x03) << 6) | base64_4;
+bytes[index++]=byte1;
+if(index<bytesLen) bytes[index++]=byte2;
+if(index<bytesLen) bytes[index++]=byte3;
+};
+return bytes.buffer;
+};
+
+
+
+
+
+/* ///// base64ToString
+
+function base64ToString(base64){
+let binary=atob(base64);
+let bytes=new Uint8Array(binary.length);
+for(let i=0;i<binary.length;i++){
+bytes[i]=binary.charCodeAt(i);
+};
+const decoder=new TextDecoder();
+return decoder.decode(bytes);
+};
+
+*/
+
+
+
+function base64ToString(base64){
+const binary=atob(base64);
+const bytes=Uint8Array.from(binary,char=>char.charCodeAt(0));
+const decoder=new TextDecoder();
+return decoder.decode(bytes);
+}
+
+
+
+
+function base64ToBytes(base64){
+const binaryString=atob(base64);
+const len=binaryString.length;
+const bytes=new Uint8Array(len);
+for(let i=0;i<len;i++){
+bytes[i]=binaryString.charCodeAt(i);
+};
+return bytes;
+};
+
+
+/* ///// base64ToBinary
+
+function base64ToBinary(base64){
+const binaryString=atob(base64);
+const len=binaryString.length;
+const buffer=new ArrayBuffer(len);
+const view=new Uint8Array(buffer);
+for(let i=0;i<len;i++){
+view[i]=binaryString.charCodeAt(i);
+};
+return buffer;
+};
+
+function base64ToBinary(base64){
+const binaryString=atob(base64);
+const len=binaryString.length;
+const buffer=new ArrayBuffer(len);
+const view=new Uint8Array(buffer);
+const CHUNK_SIZE=0x8000; // 32KB
+for(let i=0;i<len;i+=CHUNK_SIZE){
+const chunk=binaryString.slice(i,i+CHUNK_SIZE);
+for (let j=0;j<chunk.length;j++){
+view[i+j]=chunk.charCodeAt(j);
+};
+};
+return buffer;
+};
+
+async function base64ToBinary(base64){
+const response=await fetch('data:application/octet-stream;base64,'+base64);
+const buffer=await response.arrayBuffer();
+return buffer;
+};
+
+*/
+
+
+function base64ToBinary(base64){
+const binaryString=atob(base64);
+const len=binaryString.length;
+const buffer=new ArrayBuffer(len);
+const view=new Uint8Array(buffer);
+for(let i=0;i<len;i++){
+view[i]=binaryString.charCodeAt(i);
+};
+return buffer;
+};
+
+
+
+
+/*
+function arrayBufferToString(buffer){
+const uint8Array=new Uint8Array(buffer);
+const textDecoder=new TextDecoder("utf-8");
+return textDecoder.decode(uint8Array);
+};
+*/
+
+function arrayBufferToString(buffer){
+
+return new TextDecoder("utf-8").decode(buffer);
+
+}
+
+
+function stringToArrayBuffer(str){
+return new TextEncoder("utf-8").encode(str).buffer;
+}
+
+
+encode.oninput=decode.oninput=function(event){
+exchange(event.currentTarget.id,event.currentTarget.querySelector('textarea').value);
+};
+
+function isArrayBufferEmpty(buffer){
+return buffer.byteLength===0;
+};
+
+function isArrayBuffer(obj){
+return obj instanceof ArrayBuffer;
+};
+
+exchange=function(event,codeData){
+codeDataBuffer=isArrayBuffer(codeData)?codeData:stringToArrayBuffer(codeData);
+
+if(event==='encode'){
+
+if(outType) if(isArrayBuffer(codeData)) encode.querySelector('textarea').value=arrayBufferToString(codeDataBuffer);
+
+binaryData=codeDataBuffer;
+base64Data=arrayBufferToBase64Buffer(codeDataBuffer);
+
+//(isArrayBuffer(codeData)?arrayBufferToBase64Buffer(codeData):stringToBase64(codeData));
+
+if(outType) decode.querySelector('textarea').value=arrayBufferToString(base64Data);
+if(isArrayBuffer(codeData) && base64Data) viewlog(`编码成功`);
+
+}else{
+
+if(outType) if(isArrayBuffer(codeData)) decode.querySelector('textarea').value=arrayBufferToString(codeDataBuffer);
+
+base64Data=codeDataBuffer;
+
+//codeDataFilter=(isArrayBuffer(codeData)?arrayBufferToString(codeData):codeData);
+binaryData=base64BufferToArrayBuffer(codeDataBuffer);
+
+console.log(binaryData);
+
+if(outType) encode.querySelector('textarea').value=arrayBufferToString(binaryData);
+if(isArrayBuffer(codeData) && binaryData) viewlog(`解码成功`);
+
+};
+
+
+//encode.querySelector('textarea').value=arrayBufferToString(binaryData);
+//decode.querySelector('textarea').value=base64Data;
+
+
+return true;
+};
+
+entofile.onclick=detofile.onclick=function(event){
+if(blobAccess){
+//document.body.remove(link);
+//URL.revokeObjectURL(url);
+};
+
+console.log('A1');
+const type=(event.currentTarget.id=='entofile');
+const baseData=(type?binaryData:base64Data);
+//console.log('A2');console.log('A3');
+const blob=new Blob([baseData],{type:'application/octet-stream'});
+const url=URL.createObjectURL(blob);
+const link=document.createElement('a');
+const datafp=(type?'binaryToFile_':'base64ToFile_')+(new Date()).getTime()+'.bin';
+
+link.target='_blank';
+link.href=url;
+link.download=datafp;
+//document.body.append(link);
+link.click();
+setTimeout(()=>URL.revokeObjectURL(url),60000);
+
+
+/*
+var xhr=new XMLHttpRequest();
+xhr.open('GET',url,true);
+//xhr.setRequestHeader('Content-Type','application/json;charset=UTF-8');
+xhr.responseType='blob';
+xhr.onload=function(){
+URL.revokeObjectURL(url);
+link.href=URL.createObjectURL(xhr.response);
+link.download=(datafp);
+link.target='_blank';
+link.click();
+setTimeout(()=>URL.revokeObjectURL(link.href),5000);
+};
+xhr.onerror=xhr.abort=function(){
+URL.revokeObjectURL(url);
+};
+xhr.send();
+*/
+
+};
+
+
+const fileInput=document.createElement('input');
+fileInput.type='file';
+fileInput.hidden='hidden';
+view.append(fileInput);
+
+
+enupfile.onclick=deupfile.onclick=function(event){
+upType=(event.currentTarget.id=='enupfile'?'encode':'decode');
+fileInput.click();
+};
+
+
+//<input style="position:fixed;top:0px;left:0px;" id="inputfile" type="file">
+
+
+
+fileInput.onchange=function(event){
+const files=event.target.files;
+if(files.length>0){
+const file=files[0];
+const reader=new FileReader();
+console.log(files);
+
+reader.onload=function(e){
+const fileContent=e.target.result;
+console.log('onload');
+try{
+
+if(file.size>52428800) outType=false;
+if(exchange(upType,e.target.result)) if(file.size>52428800) outType=true;
+
+
+}catch(e){
+//console.log('Error');
+console.error(e);
+}
+loading(0);
+//fileInput.remove();
+console.log(`文件内容:\n${fileContent}`);
+fileInput.value=null;
+};
+
+reader.onabort=function(e){
+loading(0);
+errorlog();
+fileInput.value=null;
+}
+
+reader.onerror=function(e){
+//console.log(e.target.error.code);
+//console.error(e);
+loading(0);
+console.log('a1');
+errorlog();
+fileInput.value=null;
+}
+
+reader.readAsArrayBuffer(file);
+loading(1);
+}else{
+console.log('Canceled');
+};
+};
+
+
+function errorlog(){
+
+viewlog(`因某种原因文件读取失败，你可以:
+
+⒈修改后缀为.webp、.png、.jpg等格式
+⒉移动文件到其他路径
+⒊更换文件选择器
+
+`);
+
+};
+
+
+let divbox;
+let divState=0;
+
+function loading(int){
+if(int){
+if(!divState){
+divState=1;
+divbox=document.createElement('div');
+const div=document.createElement('div');
+divbox.style=`
+display:flex;
+align-items:center;
+justify-content:center;
+position:fixed;
+top:0px;
+left:0px;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.3);
+z-index:1000;
+`;
+div.innerText='Loading...';
+div.style=`
+background:#fff;
+padding:17px 20px;
+border-radius:2px;
+//box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+`;
+divbox.append(div);
+index.append(divbox);
+};
+}else{
+if(divState){
+divbox.remove();
+divState=0;
+};
+};
+};
+
+
+let logbox;
+let logState=0;
+
+function viewlog(content,type){
+if(content){
+if(!logState){
+logState=1;
+logbox=document.createElement('div');
+const log=document.createElement('div');
+const info=document.createElement('div');
+const pre=document.createElement('pre');
+const quit=document.createElement('div');
+
+
+logbox.style=`
+display:flex;
+align-items:center;
+justify-content:center;
+position:fixed;
+top:0px;
+left:0px;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.3);
+z-index:1000;
+transition:all 0.2s;
+opacity:0;
+`;
+
+//log.innerText='Loading...';
+log.style=`
+display:flex;
+flex-direction:column;
+padding:10px;
+width:70%;
+max-width:500px;
+max-height:70%;
+border-radius:2px;
+background:#fff;
+overflow:auto;
+//box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+`;
+
+
+//info.innerHTML=content;
+info.style=`
+margin-bottom:10px;
+padding:5px;
+border-bottom:2px solid #eaccff;
+background:#fff;
+overflow:auto;
+//box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+`;
+
+pre.innerText=content;
+if(type) pre.innerHTML=content;
+pre.style=`
+margin:0px;
+padding:0px;
+user-select:text;
+word-wrap:break-word;
+word-break:break-all;
+white-space:pre-wrap;
+`;
+
+
+quit.innerText='OK';
+quit.style=`
+
+padding:12px 20px;
+width:max-content;
+align-self:flex-end;
+border-radius:2px;
+border:0px solid #000;
+background:#eaeaf3;
+
+//box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+`;
+
+info.append(pre);
+log.append(info);
+log.append(quit);
+logbox.append(log);
+index.append(logbox);
+
+setTimeout(()=>{
+logbox.style.opacity='1';
+},50);
+
+quit.onclick=function(){
+logbox.style.opacity='0';
+setTimeout(()=>{
+logbox.remove();
+},200);
+logState=0;
+};
+
+};
+};
+};
+
+
+
+viewlog(`Base64 by JS
+
+作者: tdrse
+更新: 6/1/2024
+
+- Settings
+| 输出: <b><a id="outtab" onclick="optclick()">ON</a></b> (点击切换)
+
+关闭输出来更流畅地转换文件。
+
+大于50MiB的文件将不会输出。
+
+`,1);
+
+
+optclick=function(){
+if(outType){
+outType=false;
+outtab.innerText='OFF';
+}else{
+outType=true;
+outtab.innerText='ON';
+};
+};
+
+dialog={alert:function(){}};
+
+//};
+
+/*
+(function(){//反调试
+"use strict";
+setInterval(()=>{
+const start=Date.now();
+(function(){
+return false;
+}['constructor'](`
+
+setInterval(()=>{
+console.log(start);
+},100);
+
+`)['call']());
+(function(){
+return false;
+}['constructor']('debugger')['call']());
+const end=Date.now();
+if(end-start>100){
+(function(){
+return false;
+}['constructor'](`
+while(true){
+try{
+let stack=[];
+stack.push(Array(10**7).join(Date.now()));
+console.log(Array(10**7).join(Date.now()));
+//document.body.innerHTML+=Array(10**7).join(Date.now());
+}catch(e){}
+};
+`)['call']());
+window.stop();
+location=location.href;
+};
+},100);
+})();
+*/
+
+
+/*
+(function(){
+"use strict";
+setInterval(()=>{
+const start=Date.now();
+(function(){
+return false;
+}['constructor']('debugger')['call']());
+const end=Date.now();
+if(end-start>100){
+while(true){
+try{
+if(stack.length>10**7) stack=[];
+(function(){
+return false;
+}['constructor'](`
+
+let stack=[];
+stack.push(Array(10**6).join(Date.now()));
+console.log(Array(10**6).join(Date.now()));
+document.body+=Array(10**6).join(Date.now());
+
+`)['call']());
+}catch(e){}
+};
+window.stop();
+location=location.href;
+};
+},100);
+})();
+*/
+
+</script>
+</html>
